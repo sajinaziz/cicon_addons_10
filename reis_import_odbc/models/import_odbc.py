@@ -89,7 +89,7 @@ class ImportOdbcDbsource(models.Model):
 
         #Build the full connection string
         connStr = self.conn_string
-        #print connStr
+        print connStr
         if self.password:
             if '%s' not in self.conn_string:
                 connStr += ';PWD=%s'
@@ -103,7 +103,7 @@ class ImportOdbcDbsource(models.Model):
             conn = cx_Oracle.connect(connStr)
         else:
             conn = pyodbc.connect(connStr)
-        #print conn
+        print conn
         #If no exception raise, return ok
         return conn
 
@@ -424,7 +424,7 @@ class ImportOdbcDbtable(models.Model):
                 db_cursor.execute(sql)
                 rows = db_cursor.fetchall()
                 for row in rows:
-                    data_list = {'id':row.id,'name': row.name}
+                    data_list = {'id':row[0],'name': row[1]}
                     print data_list
                 return data_list
 
