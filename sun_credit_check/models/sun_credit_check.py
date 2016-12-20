@@ -210,25 +210,50 @@ class SunCreditCheck(models.Model):
 
         ######Overriding create to pass values to openerp table
 
+    # @api.model
+    # def create(self,ids):
+    #     partner_id = ids['partner_id']
+    #     print 'hhhhh'
+    #     print partner_id
+    #     _val = {}
+    #     if partner_id:
+    #         _val = self.get_partner_info(partner_id,False)
+    #
+    #         ids.update({'status': _val['status']})
+    #         ids.update({'period': _val['period']})
+    #         ids.update({'cheque_last_bounced': _val['cheque_last_bounced']})
+    #         ids.update({'cheque_last_held': _val['cheque_last_held']})
+    #         ids.update({'check_inhand_amount': _val['check_inhand_amount']})
+    #         ids.update({'credit_limit': _val['credit_limit']})
+    #         ####Change the state new to draft at the time of record creation
+    #         if ids['state'] == 'new':
+    #             ids.update({'state': 'draft'})
+    #     #####Don't save to database if there is no credit records from sun system
+    #     if ids['sun_credit_details_ids']:
+    #         result = super(SunCreditCheck, self).create(ids)
+    #     else:
+    #         raise UserError('Please Check Customer SUN Account Details')
+    #     return result
+
     @api.model
-    def create(self,ids):
-        partner_id = ids['partner_id']
+    def create(self, vals):
+        partner_id = self.partner_id
         _val = {}
         if partner_id:
-            _val = self.get_partner_info(partner_id,False)
+            _val = self.get_partner_info(partner_id, False)
 
-            ids.update({'status': _val['status']})
-            ids.update({'period': _val['period']})
-            ids.update({'cheque_last_bounced': _val['cheque_last_bounced']})
-            ids.update({'cheque_last_held': _val['cheque_last_held']})
-            ids.update({'check_inhand_amount': _val['check_inhand_amount']})
-            ids.update({'credit_limit': _val['credit_limit']})
+            vals.update({'status': _val['status']})
+            vals.update({'period': _val['period']})
+            vals.update({'cheque_last_bounced': _val['cheque_last_bounced']})
+            vals.update({'cheque_last_held': _val['cheque_last_held']})
+            vals.update({'check_inhand_amount': _val['check_inhand_amount']})
+            vals.update({'credit_limit': _val['credit_limit']})
             ####Change the state new to draft at the time of record creation
-            if ids['state'] == 'new':
-                ids.update({'state': 'draft'})
+            if vals['state'] == 'new':
+                vals.update({'state': 'draft'})
         #####Don't save to database if there is no credit records from sun system
-        if ids['sun_credit_details_ids']:
-            result = super(SunCreditCheck, self).create(ids)
+        if vals['sun_credit_details_ids']:
+            result = super(SunCreditCheck, self).create(vals)
         else:
             raise UserError('Please Check Customer SUN Account Details')
         return result
@@ -240,7 +265,7 @@ class SunCreditCheck(models.Model):
     #         _val = self.get_partner_info(cr, uid, partner_id,True, context)
     #     return {'value': _val}
 
-   # @api.onchange('partner_id')
+    @api.onchange('partner_id')
     def on_partner_change(self,partner_id):
         _val = {}
         if partner_id:
@@ -507,7 +532,7 @@ class SunCreditCheck(models.Model):
     #     return _val
 
     #####Load sunaccount code from openerp, then load Account credit details from sunsystem.
-    @api.multi
+    @api.onchange('partner_id')
     def get_partner_info(self,partner_id,status):
         _val = {}
         _val['has_attachment'] = None
@@ -527,7 +552,8 @@ class SunCreditCheck(models.Model):
         _val['sun_credit_details_ids'] =None
         #_val['check_aging_ids'] =None
 
-
+        # print partner_id
+        # print 'hhhh'
         partner = self.env['res.partner'].search([('id','=',partner_id)])
         # print partner
         # print 'hhhh'
@@ -586,6 +612,8 @@ class SunCreditCheck(models.Model):
 
 
         data = []
+        print 'gfg'
+        print sun_accounts
         for sun_account in sun_accounts:
             ibm_period = _val['period']  #If none of the below condition is true then partner payment term will be passed to sql
             prj_cr_limit = _val['credit_limit'] #Default credit limit will be partner credit limit
@@ -599,18 +627,25 @@ class SunCreditCheck(models.Model):
 
 
 
-        # query = "EXEC dbo.GetSunAccountBalanceCombined @SunAccountNo = '" + sun_account['sun_acc_no'] +\
-        #         "', @SunDb = '" + sun_account['sun_db'] + "', @ToPeriod = " + ibm_period   # Ibm replace the actual value
-        # result = self.env['import.odbc.dbsource'].fetch_data(dbsource='SQL', query=query)
-        #
-        # for x in result:
-        #     x.update({'prj_period':str(ibm_period),
-        #               'prj_pay_days':payment_term_days,
-        #               'prj_cr_limit':prj_cr_limit})
-        #     data.append(x)
+        query = "EXEC SystemInfo.dbo.sun_account @SunAccountNo = '" + sun_account['sun_acc_no'] +\
+                "', @SunDb = '" + sun_account['sun_db'] + "', @ToPeriod = " + ibm_period   # Ibm replace the actual value
+        # query = "EXEC SystemInfo.dbo.sun_account @SunAccountNo = '" + sun_account['sun_acc_no'] + \
+        #         "', @SunDb = '" + sun_account['sun_db']
+        print query
+        result = self.env['import.odbc.dbsource'].fetch_data(dbsource='SQL', query=query)
+        print result
 
+        for x in result:
+            x.update({'prj_period':str(ibm_period),
+                      'prj_pay_days':payment_term_days,
+                      'prj_cr_limit':prj_cr_limit})
+            data.append(x)
+
+        # print 'gggg'
+        # print data
         suncode_info = []
         for x in data:
+
             project_id = (item for item in sun_accounts if item["sun_acc_no"] == x['ACCNT_CODE'].strip() and item["sun_db"] == x['SUN_DB'].strip()).next()
             _invcedate=''
             ##Payment Due months, Due Days with Note
@@ -646,7 +681,7 @@ class SunCreditCheck(models.Model):
 
             _val['sun_credit_details_ids'] = suncode_info
 
-
+        #print _val['sun_credit_details_ids']
         ##_val['cheque_againg_ids'] = self.pool.get('cic.check.aging.view').search(cr,uid,[('partner_id','=',partner_id)])
         #
         #
@@ -656,6 +691,7 @@ class SunCreditCheck(models.Model):
         _val['cheque_details_ids'] = _cheque_ids
         _val['debtor_statement_lines'] = []
 
+        print _val
         return _val
 
 
@@ -1044,6 +1080,7 @@ class SunCreditCheckdetails(models.Model):
 
     @api.multi
     def load_details(self,ids,context=None):
+        #print ids
         #assert len(ids) == 1, 'This option should only be used for a single id at a time.'
         self.ensure_one()
         ctx = dict(context)
