@@ -29,7 +29,7 @@
                                     <group colspan="4">
                                         <field name="date_create" invisible="True"/>
                                         <field name="user_id" invisible="True"/>
-                                        <field name="partner_id"  on_change="on_partner_change(partner_id)" attrs="{'readonly':[('state','in',['draft','verified','approved','rejected'])]}" />
+                                        <field name="partner_id"   attrs="{'readonly':[('state','in',['draft','verified','approved','rejected'])]}" />
                                          <!--<field name="partner_id"  on_change="partner_change(partner_id)" attrs="{'readonly':[('state','in',['re_submitted','bounced','cleared','replaced'])]}" />-->
                                         <!--<field name="partner_id"  on_change="on_partner_change(partner_id)" attrs="{'readonly':[('id','=',True)]}" />-->
                                         <field name="status"/>

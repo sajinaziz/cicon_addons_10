@@ -266,11 +266,11 @@ class SunCreditCheck(models.Model):
     #     return {'value': _val}
 
     @api.onchange('partner_id')
-    def on_partner_change(self,partner_id):
+    def on_partner_change(self):
         _val = {}
-        if partner_id:
-            print partner_id
-            _val = self.get_partner_info(partner_id,True)
+        if self.partner_id:
+            print self.partner_id
+            _val = self.get_partner_info(self.partner_id,True)
         return {'value': _val}
 
     # def _calc_invoice_extra_days(self,cr,uid,in_date,pt_days,context=None):
@@ -532,7 +532,6 @@ class SunCreditCheck(models.Model):
     #     return _val
 
     #####Load sunaccount code from openerp, then load Account credit details from sunsystem.
-    @api.onchange('partner_id')
     def get_partner_info(self,partner_id,status):
         _val = {}
         _val['has_attachment'] = None
@@ -554,14 +553,14 @@ class SunCreditCheck(models.Model):
 
         # print partner_id
         # print 'hhhh'
-        partner = self.env['res.partner'].search([('id','=',partner_id)])
+        partner = partner_id
         # print partner
         # print 'hhhh'
        # _val['has_attachment'] = len(partner.attachment_ids)
         _val['sales_person'] = partner.user_id.name
         #payment_term = partner.project_payment_term_id
         #_val['payment_terms'] = payment_term.id
-        _val['check_inhand_amount'] = self.get_check_amount(partner_id)
+        _val['check_inhand_amount'] = self.get_check_amount(partner_id.id)
         #_val['check_inhand_amount1'] = self.get_check_amount(cr,uid,partner_id)
         _val['credit_limit'] = partner.credit_limit
 
@@ -595,10 +594,8 @@ class SunCreditCheck(models.Model):
         cheque_held_history = self.env['cic.check.bounce.history'].search([('partner_id', '=',partner_id),('state', 'in' ,['hold'])])
         if cheque_held_history:
             _val['cheque_hold'] = len(cheque_held_history)
-            _last_hold_date  = self.env['cic.check.bounce.history'].read(max(cheque_held_history),context=None)
+            _last_hold_date  = self.env['cic.check.bounce.history'].read(max(cheque_held_history))
             _val['cheque_last_held']=_last_hold_date["bounced_date"]
-
-
 
         #Find Current Period based on today
         payment_term_days=0
@@ -625,8 +622,6 @@ class SunCreditCheck(models.Model):
                 if proj_payment.project_credit_limit > 0:
                     prj_cr_limit= proj_payment.project_credit_limit
 
-
-
         query = "EXEC SystemInfo.dbo.sun_account @SunAccountNo = '" + sun_account['sun_acc_no'] +\
                 "', @SunDb = '" + sun_account['sun_db'] + "', @ToPeriod = " + ibm_period   # Ibm replace the actual value
         # query = "EXEC SystemInfo.dbo.sun_account @SunAccountNo = '" + sun_account['sun_acc_no'] + \
@@ -634,7 +629,6 @@ class SunCreditCheck(models.Model):
         print query
         result = self.env['import.odbc.dbsource'].fetch_data(dbsource='SQL', query=query)
         print result
-
         for x in result:
             x.update({'prj_period':str(ibm_period),
                       'prj_pay_days':payment_term_days,
