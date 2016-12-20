@@ -270,7 +270,7 @@ class SunCreditCheck(models.Model):
         _val = {}
         if self.partner_id:
             print self.partner_id
-            _val = self.get_partner_info(self.partner_id,True)
+            _val = self.get_partner_info()
         return {'value': _val}
 
     # def _calc_invoice_extra_days(self,cr,uid,in_date,pt_days,context=None):
@@ -532,7 +532,7 @@ class SunCreditCheck(models.Model):
     #     return _val
 
     #####Load sunaccount code from openerp, then load Account credit details from sunsystem.
-    def get_partner_info(self,partner_id,status):
+    def get_partner_info(self,status):
         _val = {}
         _val['has_attachment'] = None
         _val['sales_person'] = None
@@ -553,14 +553,14 @@ class SunCreditCheck(models.Model):
 
         # print partner_id
         # print 'hhhh'
-        partner = partner_id
+        partner = self.partner_id
         # print partner
         # print 'hhhh'
        # _val['has_attachment'] = len(partner.attachment_ids)
         _val['sales_person'] = partner.user_id.name
         #payment_term = partner.project_payment_term_id
         #_val['payment_terms'] = payment_term.id
-        _val['check_inhand_amount'] = self.get_check_amount(partner_id.id)
+        _val['check_inhand_amount'] = self.get_check_amount(self.partner_id.id)
         #_val['check_inhand_amount1'] = self.get_check_amount(cr,uid,partner_id)
         _val['credit_limit'] = partner.credit_limit
 
@@ -584,14 +584,14 @@ class SunCreditCheck(models.Model):
         #     rating = ratings[record-1].rating_category_id.name
         #     _val['status'] = _val['status'] + ' / ' + rating
 
-        cheque_bounce_history = self.env['cic.check.bounce.history'].search([('partner_id', '=',partner_id),('state', 'in' ,['bounced'])])
+        cheque_bounce_history = self.env['cic.check.bounce.history'].search([('partner_id', '=',self.partner_id.id),('state', 'in' ,['bounced'])])
         if cheque_bounce_history:
             _val['cheque_bounce'] = len(cheque_bounce_history)
-            _last_bounce_date  = self.env['cic.check.bounce.history'].read(max(cheque_bounce_history))
-            _val['cheque_last_bounced']=_last_bounce_date["bounced_date"]
+            _last_bounce_date = self.env['cic.check.bounce.history'].read(max(cheque_bounce_history))
+            _val['cheque_last_bounced'] = _last_bounce_date["bounced_date"]
            # _val['cheque_last_bounced']=cheque_bounce_history["bounced_date"]
 
-        cheque_held_history = self.env['cic.check.bounce.history'].search([('partner_id', '=',partner_id),('state', 'in' ,['hold'])])
+        cheque_held_history = self.env['cic.check.bounce.history'].search([('partner_id', '=',self.partner_id.id),('state', 'in' ,['hold'])])
         if cheque_held_history:
             _val['cheque_hold'] = len(cheque_held_history)
             _last_hold_date  = self.env['cic.check.bounce.history'].read(max(cheque_held_history))
@@ -679,8 +679,8 @@ class SunCreditCheck(models.Model):
         ##_val['cheque_againg_ids'] = self.pool.get('cic.check.aging.view').search(cr,uid,[('partner_id','=',partner_id)])
         #
         #
-        _aging_ids = self.env['cic.check.aging.view'].search([('partner_id','=',partner_id)])
-        _cheque_ids = self.env['cic.check.receipt'].search([('partner_id','=',partner_id),('state','in',['received','submitted','re_submitted'])])
+        _aging_ids = self.env['cic.check.aging.view'].search([('partner_id','=',self.partner_id.id)])
+        _cheque_ids = self.env['cic.check.receipt'].search([('partner_id','=',self.partner_id.id),('state','in',['received','submitted','re_submitted'])])
         _val['check_aging_ids'] = _aging_ids
         _val['cheque_details_ids'] = _cheque_ids
         _val['debtor_statement_lines'] = []
