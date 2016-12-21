@@ -187,8 +187,8 @@ class ImportOdbcDbsource(models.Model):
                 db_cursor.execute(query)
                 datarow = []
                 cols = [x[0] for x in db_cursor.description]
-                print cols
                 for row in db_cursor:
+                    print row
                     columns = {}
                     for col in cols:
                         columns.update({col: getattr(row, col)})
