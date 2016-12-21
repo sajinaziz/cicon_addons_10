@@ -156,32 +156,31 @@ class ImportOdbcDbsource(models.Model):
     # def fetch_data(self, cr, uid, dbsource=None, query=None, context=None):
     #
     #     dbsource_id = self.search(cr, uid, [('name', '=', dbsource)])
-    #     data = self.browse(dbsource_id)
+    #     data = self.browse(cr, uid, dbsource_id)
     #     try:
     #         for obj in data:
-    #             conn = self.conn_open()
+    #             conn = self.conn_open(cr, uid, obj.id)
     #             db_cursor = conn.cursor()
     #             db_cursor.execute(query)
     #             datarow = []
     #             cols = [x[0] for x in db_cursor.description]
     #             for row in db_cursor:
     #                 columns = {}
-    #             for col in cols:
-    #                 columns.update({col: getattr(row, col)})
-    #             datarow.append(columns)
-    #     except Exception:
-    #         raise UserError(
+    #                 for col in cols:
+    #                     columns.update({col: getattr(row, col)})
+    #                 datarow.append(columns)
+    #     except Exception, error:
+    #         raise osv.except_osv(
     #             ("connection test failed"),
     #             ("Reason: %s") % error
     #         )
-    #         return datarow
+    #     return datarow
+
 
     def fetch_data(self, dbsource=None, query=None):
-        dbsource_id = self.search([('name', '=', dbsource)])
-        print dbsource_id
-        #data = self.browse(dbsource_id)
+        data = self.search([('name', '=', dbsource)])
         try:
-            for obj in dbsource_id:
+            for obj in data:
                 conn = obj.conn_open()
                 db_cursor = conn.cursor()
                 db_cursor.execute(query)
@@ -189,9 +188,9 @@ class ImportOdbcDbsource(models.Model):
                 cols = [x[0] for x in db_cursor.description]
                 for row in db_cursor:
                     columns = {}
-                for col in cols:
-                    columns.update({col: getattr(row, col)})
-                datarow.append(columns)
+                    for col in cols:
+                        columns.update({col: getattr(row, col)})
+                    datarow.append(columns)
         except Exception,error:
             raise UserWarning(
                 ("connection test failed"),
