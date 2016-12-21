@@ -83,7 +83,6 @@ class ImportOdbcDbsource(models.Model):
     #     #If no exception raise, return ok
     #     return conn
 
-    @api.model
     def conn_open(self):
         #Get dbsoource record
 
@@ -177,28 +176,27 @@ class ImportOdbcDbsource(models.Model):
     #         )
     #         return datarow
 
-    @api.multi
     def fetch_data(self, dbsource=None, query=None):
         dbsource_id = self.search([('name', '=', dbsource)])
         print dbsource_id
         #data = self.browse(dbsource_id)
-        #try:
-        for obj in self:
-            conn = dbsource_id.conn_open()
-            db_cursor = conn.cursor()
-            db_cursor.execute(query)
-            datarow = []
-            cols = [x[0] for x in db_cursor.description]
-            for row in db_cursor:
-                columns = {}
-            for col in cols:
-                columns.update({col: getattr(row, col)})
-            datarow.append(columns)
-    # except Exception,error:
-    #     raise(
-    #         ("connection test failed"),
-    #         ("Reason: %s") % error
-    #     )
+        try:
+            for obj in dbsource_id:
+                conn = obj.conn_open()
+                db_cursor = conn.cursor()
+                db_cursor.execute(query)
+                datarow = []
+                cols = [x[0] for x in db_cursor.description]
+                for row in db_cursor:
+                    columns = {}
+                for col in cols:
+                    columns.update({col: getattr(row, col)})
+                datarow.append(columns)
+        except Exception,error:
+            raise UserWarning(
+                ("connection test failed"),
+                ("Reason: %s") % error
+            )
             return datarow
 
 ImportOdbcDbsource()
