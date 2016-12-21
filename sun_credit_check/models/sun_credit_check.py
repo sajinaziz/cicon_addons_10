@@ -269,7 +269,6 @@ class SunCreditCheck(models.Model):
     def on_partner_change(self):
         _val = {}
         if self.partner_id:
-            print self.partner_id
             _val = self.get_partner_info(False)
         return {'value': _val}
 
@@ -604,11 +603,7 @@ class SunCreditCheck(models.Model):
         ibm_period = self._calc_period(payment_term_days)
         _val['period'] = ibm_period  # To Display in Form
         #Ibm End Test
-
-
         data = []
-        print 'gfg'
-        print sun_accounts
         for sun_account in sun_accounts:
             ibm_period = _val['period']  #If none of the below condition is true then partner payment term will be passed to sql
             prj_cr_limit = _val['credit_limit'] #Default credit limit will be partner credit limit
@@ -623,7 +618,6 @@ class SunCreditCheck(models.Model):
         query = "EXEC dbo.GetSunAccountBalanceCombined @SunAccountNo = '" + sun_account['sun_acc_no'] + \
                 "', @SunDb = '" + sun_account['sun_db'] + "', @ToPeriod = " + ibm_period  #
 
-        print query
         result = self.env['import.odbc.dbsource'].fetch_data(dbsource='SQL', query=query)
         print result
         for x in result:

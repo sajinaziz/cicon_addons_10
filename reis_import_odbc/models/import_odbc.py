@@ -178,6 +178,7 @@ class ImportOdbcDbsource(models.Model):
 
 
     def fetch_data(self, dbsource=None, query=None):
+        print 'In FetchData'
         data = self.search([('name', '=', dbsource)])
         try:
             for obj in data:
@@ -186,6 +187,7 @@ class ImportOdbcDbsource(models.Model):
                 db_cursor.execute(query)
                 datarow = []
                 cols = [x[0] for x in db_cursor.description]
+                print cols
                 for row in db_cursor:
                     columns = {}
                     for col in cols:
