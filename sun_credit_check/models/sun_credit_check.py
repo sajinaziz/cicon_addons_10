@@ -240,7 +240,7 @@ class SunCreditCheck(models.Model):
         partner_id = self.partner_id
         _val = {}
         if partner_id:
-            _val = self.get_partner_info(partner_id, False)
+            _val = self.get_partner_info(False)
 
             vals.update({'status': _val['status']})
             vals.update({'period': _val['period']})
@@ -270,7 +270,7 @@ class SunCreditCheck(models.Model):
         _val = {}
         if self.partner_id:
             print self.partner_id
-            _val = self.get_partner_info()
+            _val = self.get_partner_info(False)
         return {'value': _val}
 
     # def _calc_invoice_extra_days(self,cr,uid,in_date,pt_days,context=None):
@@ -291,7 +291,6 @@ class SunCreditCheck(models.Model):
     #         _days=_days-pt_days
     #     return _days
 
-    @api.multi
     def _calc_invoice_extra_days(self,in_date, pt_days):
         _days = ''
         if in_date > 0:
@@ -332,7 +331,7 @@ class SunCreditCheck(models.Model):
     #     return ibm_period
     #
 
-    @api.multi
+
     def _calc_period(self, days_payment, context=None):
 
         dt = datetime.today()
@@ -370,14 +369,13 @@ class SunCreditCheck(models.Model):
     #     #_date = datetime(year=int(s[0:4]), month=int(s[4:6]), day=int(s[6:8]))
     #     return str(r.months)
 
-    @api.multi
     def _calc_invoice_date_details(self,  days_payment, _invc_date, context=None):
 
-        _dt = datetime.today()
+        _dt = datetime.date.today()
         _ibm_period = _dt.strftime("%Y%m%d")
         # In this it removes added 0 in above function
         if days_payment > 0:
-            _dt = datetime.today()
+            _dt = datetime.date.today()
             _ibm_first_of_month = datetime.date(day=1, month=_dt.month, year=_dt.year)
             _ibm_last_of_last_month = _ibm_first_of_month - timedelta(days=1)
             _ibm_pt_reduced_date = _ibm_last_of_last_month - timedelta(days_payment)
