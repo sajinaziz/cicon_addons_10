@@ -620,10 +620,9 @@ class SunCreditCheck(models.Model):
                 if proj_payment.project_credit_limit > 0:
                     prj_cr_limit= proj_payment.project_credit_limit
 
-        query = "EXEC SystemInfo.dbo.sun_account @SunAccountNo = '" + sun_account['sun_acc_no'] +\
-                "', @SunDb = '" + sun_account['sun_db'] + "', @ToPeriod = " + ibm_period   # Ibm replace the actual value
-        # query = "EXEC SystemInfo.dbo.sun_account @SunAccountNo = '" + sun_account['sun_acc_no'] + \
-        #         "', @SunDb = '" + sun_account['sun_db']
+        query = "EXEC dbo.GetSunAccountBalanceCombined @SunAccountNo = '" + sun_account['sun_acc_no'] + \
+                "', @SunDb = '" + sun_account['sun_db'] + "', @ToPeriod = " + ibm_period  #
+
         print query
         result = self.env['import.odbc.dbsource'].fetch_data(dbsource='SQL', query=query)
         print result
