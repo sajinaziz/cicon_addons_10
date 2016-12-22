@@ -292,15 +292,15 @@ class SunCreditCheck(models.Model):
     def _calc_invoice_extra_days(self,in_date, pt_days):
         _days = ''
         if in_date > 0:
-            _dt1 = datetime.date.today()
+            _dt1 = datetime.today()
             _today = _dt1.strftime("%Y%m%d")
-            _today = datetime.datetime.strptime(str(_today), '%Y%m%d')
+            _today = datetime.strptime(str(_today), '%Y%m%d')
             # Invoiced date is converted to date format from dmy
-            _t2 = datetime.datetime.strptime(str(in_date), '%d/%m/%Y')
+            _t2 = datetime.strptime(str(in_date), '%d/%m/%Y')
             # First of invoiced month
-            _t2 = datetime.datetime(_t2.year, _t2.month, 1)
+            _t2 = datetime.date(_t2.year, _t2.month, 1)
             # First of invoiced next month
-            _invoiced_next_month = datetime.datetime(_t2.year + (_t2.month / 12), ((_t2.month % 12) + 1), 1)
+            _invoiced_next_month = datetime.date(_t2.year + (_t2.month / 12), ((_t2.month % 12) + 1), 1)
             # End of invoiced month
             _invoiced_month_end = _invoiced_next_month - timedelta(days=1)
             _days = abs((_today - _invoiced_month_end).days)
