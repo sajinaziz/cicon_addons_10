@@ -298,9 +298,9 @@ class SunCreditCheck(models.Model):
             # Invoiced date is converted to date format from dmy
             _t2 = datetime.strptime(str(in_date), '%d/%m/%Y')
             # First of invoiced month
-            _t2 = datetime.date(_t2.year, _t2.month, 1)
+            _t2 = datetime(_t2.year, _t2.month, 1)
             # First of invoiced next month
-            _invoiced_next_month = datetime.date(_t2.year + (_t2.month / 12), ((_t2.month % 12) + 1), 1)
+            _invoiced_next_month = datetime(_t2.year + (_t2.month / 12), ((_t2.month % 12) + 1), 1)
             # End of invoiced month
             _invoiced_month_end = _invoiced_next_month - timedelta(days=1)
             _days = abs((_today - _invoiced_month_end).days)
@@ -374,10 +374,11 @@ class SunCreditCheck(models.Model):
         # In this it removes added 0 in above function
         if days_payment > 0:
             _dt = datetime.today()
-            _ibm_first_of_month = datetime.date(day=1, month=_dt.month, year=_dt.year)
+            _ibm_first_of_month = datetime(day=1, month=_dt.month, year=_dt.year)
             _ibm_last_of_last_month = _ibm_first_of_month - timedelta(days=1)
             _ibm_pt_reduced_date = _ibm_last_of_last_month - timedelta(days_payment)
             _ibm_period = _ibm_pt_reduced_date.strftime("%Y%m%d")
+        _date1 = datetime.strptime(str(_ibm_period), '%Y%m%d')
         _date1 = datetime.strptime(str(_ibm_period), '%Y%m%d')
         _date2 = datetime.datetime.strptime(str(_invc_date), '%Y%m%d')
         r = relativedelta.relativedelta(_date1, _date2)
