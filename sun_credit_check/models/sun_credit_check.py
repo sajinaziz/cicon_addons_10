@@ -639,7 +639,7 @@ class SunCreditCheck(models.Model):
             _t1 = x['FirstPendingInvoice']
             if _t1 != 0 :
                 s=str(_t1)
-                s_datetime = datetime.date.strptime(s, '%Y%m%d')
+                s_datetime = datetime.datetime.strptime(s, '%Y%m%d')
                 _invcedate="  [" + s_datetime.strftime("%d/%m/%Y") +"]"
                 ##To Calculate Due in words
                 #_duemonths= self._calc_invoice_date_details(cr, uid,x['prj_pay_days'],x['FirstPendingInvoice'])
