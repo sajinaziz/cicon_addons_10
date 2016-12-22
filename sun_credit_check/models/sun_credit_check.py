@@ -617,7 +617,7 @@ class SunCreditCheck(models.Model):
 
         query = "EXEC dbo.GetSunAccountBalanceCombined @SunAccountNo = '" + sun_account['sun_acc_no'] + \
                 "', @SunDb = '" + sun_account['sun_db'] + "', @ToPeriod = " + ibm_period  #
-
+        print query
         result = self.env['import.odbc.dbsource'].fetch_data(dbsource='SQL', query=query)
         print result
         for x in result:
