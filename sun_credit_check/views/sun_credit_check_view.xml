@@ -282,7 +282,6 @@
         <record model="ir.actions.act_window" id="action_sun_credit_check_tree_view">
             <field name="name">Credit Check</field>
             <field name="res_model">sun.credit.check</field>
-            <field name="view_id" ref="sun_credit_check_form_view"/>
         </record>
 
 
