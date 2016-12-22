@@ -853,10 +853,10 @@ class SunCreditCheck(models.Model):
             _a = ' '
             if include_allocated:
                 _a = 'A'
-            # query = "EXEC dbo.GetSunAccountBalanceDetails @SunAccountNo = '" + sun_acc['account_code'] + \
-            #         "', @SunDb = '" + sun_acc['sun_db'] + "'" + ",@A= '" + _a + "'"
-            query = "EXEC dbo.sun_account @SunAccountNo = '" + sun_acc['account_code'] + \
+            query = "EXEC dbo.GetSunAccountBalanceDetails @SunAccountNo = '" + sun_acc['account_code'] + \
                     "', @SunDb = '" + sun_acc['sun_db'] + "'" + ",@A= '" + _a + "'"
+            # query = "EXEC dbo.sun_account @SunAccountNo = '" + sun_acc['account_code'] + \
+            #         "', @SunDb = '" + sun_acc['sun_db'] + "'" + ",@A= '" + _a + "'"
             print query
             result = self.env['import.odbc.dbsource'].fetch_data(dbsource='SQL', query=query)
             print result
