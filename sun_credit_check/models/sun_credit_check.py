@@ -1,4 +1,3 @@
-import datetime
 from dateutil import relativedelta
 # from dateutil.relativedelta import relativedelta
 from odoo import models,fields,api
@@ -370,16 +369,16 @@ class SunCreditCheck(models.Model):
 
     def _calc_invoice_date_details(self,  days_payment, _invc_date, context=None):
 
-        _dt = datetime.date.today()
+        _dt = datetime.today()
         _ibm_period = _dt.strftime("%Y%m%d")
         # In this it removes added 0 in above function
         if days_payment > 0:
-            _dt = datetime.date.today()
+            _dt = datetime.today()
             _ibm_first_of_month = datetime.date(day=1, month=_dt.month, year=_dt.year)
             _ibm_last_of_last_month = _ibm_first_of_month - timedelta(days=1)
             _ibm_pt_reduced_date = _ibm_last_of_last_month - timedelta(days_payment)
             _ibm_period = _ibm_pt_reduced_date.strftime("%Y%m%d")
-        _date1 = datetime.datetime.strptime(str(_ibm_period), '%Y%m%d')
+        _date1 = datetime.strptime(str(_ibm_period), '%Y%m%d')
         _date2 = datetime.datetime.strptime(str(_invc_date), '%Y%m%d')
         r = relativedelta.relativedelta(_date1, _date2)
         # _date = datetime(year=int(s[0:4]), month=int(s[4:6]), day=int(s[6:8]))
@@ -639,7 +638,7 @@ class SunCreditCheck(models.Model):
             _t1 = x['FirstPendingInvoice']
             if _t1 != 0 :
                 s=str(_t1)
-                s_datetime = datetime.datetime.strptime(s, '%Y%m%d')
+                s_datetime = datetime.strptime(s, '%Y%m%d')
                 _invcedate="  [" + s_datetime.strftime("%d/%m/%Y") +"]"
                 ##To Calculate Due in words
                 #_duemonths= self._calc_invoice_date_details(cr, uid,x['prj_pay_days'],x['FirstPendingInvoice'])
