@@ -875,7 +875,7 @@ class SunCreditCheck(models.Model):
                 _t1 = x['TRANS_DATE']
                 if _t1 != 0 or _t1 != '':
                     s = str(_t1)
-                    s_datetime = datetime.date.strptime(s.strip(), '%Y%m%d')
+                    s_datetime = datetime.strptime(s.strip(), '%Y%m%d')
                     # invcedate="  [" + s_datetime.strftime("%d/%m/%Y") +"]"
                     invcedate = s_datetime.strftime("%d/%m/%Y")
                     # invcedate = time.strptime(invcedate, "%d/%m/%Y")
