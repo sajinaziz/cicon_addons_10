@@ -179,13 +179,13 @@ class ImportOdbcDbsource(models.Model):
 
     def fetch_data(self, dbsource=None, query=None):
         print 'In FetchData'
+        datarow = []
         data = self.search([('name', '=', dbsource)])
         try:
             for obj in data:
                 conn = obj.conn_open()
                 db_cursor = conn.cursor()
                 db_cursor.execute(query)
-                datarow = []
                 cols = [x[0] for x in db_cursor.description]
                 for row in db_cursor:
                     print row
@@ -198,7 +198,7 @@ class ImportOdbcDbsource(models.Model):
                 ("connection test failed"),
                 ("Reason: %s") % error
             )
-            return datarow
+        return datarow
 
 ImportOdbcDbsource()
 
