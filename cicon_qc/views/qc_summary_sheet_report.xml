@@ -85,7 +85,12 @@
 
                 <tbody>
                 <tr t-foreach="docs" t-as="o">
-                    <td> <span t-field="o.name"/></td>
+                        <td>
+                            <span t-field="o.name"/>
+                            <t t-if="o.vehicle_number">
+                                (<span t-field="o.vehicle_number"/>)
+                            </t>
+                        </td>
                         <td> <span t-field="o.partner_id.name" /></td>
                         <td> <span t-field="o.project_id.name"/></td>
                         <td> <span t-field="o.delivery_date" /></td>
@@ -93,7 +98,7 @@
                             <table class="table">
                                 <thead>
                                     <th>DN</th>
-                                    <th>Code</th>
+                                    <th>Ref No.</th>
                                 </thead>
                                 <tbody>
                                 <tr t-foreach="o.dn_line_ids" t-as="dline">
@@ -110,10 +115,10 @@
                             <table class="table">
                                 <thead>
                                     <th>Dia</th>
-                                    <th>Origin</th>
-                                    <th>Remarks</th>
-                                    <th>Cert.s</th>
-                                    <th>Date</th>
+                                    <th>Mfg.</th>
+                                    <th>Qty.</th>
+                                    <th>Heat/Lot No.</th>
+                                    <!--<th>Date</th>-->
                                 </thead>
                                 <tbody>
 
@@ -135,7 +140,7 @@
                                              <span t-field="mline.certificate_id.name"/>
 
                                          </td>
-                                         <td  style="width:25%"> <span t-field="mline.certificate_id.issued_date" t-field-options='{"format": "dd-MMM-yyyy"}' /> </td>
+                                         <!--<td  style="width:25%"> <span t-field="mline.certificate_id.issued_date" t-field-options='{"format": "dd-MMM-yyyy"}' /> </td>-->
                                      </tr>
                                 </tbody>
                             </table>

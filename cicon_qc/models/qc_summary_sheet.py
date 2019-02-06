@@ -49,7 +49,8 @@ class QcSummary(models.Model):
 
     certificate_line_ids = fields.One2many('cic.qc.cert.line', 'qc_summary_id', string="Mill Certificates")
     dn_line_ids = fields.One2many('cic.qc.dn.line', 'qc_summary_id', string="Delivery Notes")
-    wb_ticket = fields.Integer('Weigh Bridge')
+    wb_ticket = fields.Integer('Weigh Ticket #')
+    vehicle_number = fields.Char('Vehicle')
     loading_list = fields.Boolean('Loading List')
     order_codes = fields.Many2many('cicon.prod.order', compute=_get_order_codes, search=_search_order_code, store=False, string='Order Codes', readonly=True)
     heat_numbers = fields.Many2many('cic.qc.mill.cert.line', compute=_get_order_codes, search=_search_heat_number, store=False, string='Heat Numbers', readonly=True)
@@ -74,6 +75,17 @@ class QcCertLine(models.Model):
     _name = 'cic.qc.cert.line'
     _description = 'CICON Certificates Note'
 
+    @api.multi
+    def _get_current_material_approval(self):
+        _states =  dict(self.env['qc.material.approval']._fields['state'].selection)
+        for _rec in self:
+            if _rec.qc_summary_id and _rec.certificate_id:
+                _approvals_ids = self.env['qc.material.approval'].search(
+                    [('job_site_id','=', _rec.qc_summary_id.project_id.id),('origin_attrib_value_id','=',_rec.certificate_id.origin_attrib_value_id.id)],
+                    limit=1, order='id desc')
+                if _approvals_ids:
+                    _rec.material_status = _states[_approvals_ids.state]
+
     qc_summary_id = fields.Many2one('cic.qc.summary', string='QC Summary', required=True, ondelete='cascade')
     certificate_id = fields.Many2one('cic.qc.mill.cert.line', string='Heat Number')
     dia_attrib_value_id = fields.Many2one('product.attribute.value', related='certificate_id.dia_attrib_value_id',
@@ -84,6 +96,7 @@ class QcCertLine(models.Model):
                                           readonly=True, string='Length', store=False)
     issued_date = fields.Date('Issued Date', related='certificate_id.cert_file_id.issued_date', readonly=True)
     page_number = fields.Char('Page Number', related='certificate_id.cert_file_id.page_number', readonly=True, store=False)
+    material_status = fields.Char(compute=_get_current_material_approval, string='Status')
 
     quantity = fields.Float('Remarks', digits=(10, 3))
     sequence = fields.Integer('Sequence')
