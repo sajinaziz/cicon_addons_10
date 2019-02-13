@@ -501,6 +501,9 @@
             <div class="col-xs-2 col-xs-offset-3">MAINTENANCE : </div>
             <div class="col-xs-2"> <strong t-field="o.technician"/>  </div>
         </div>
+        <div class="row mt8">
+            <div class="col-xs-2 col-xs-offset-7"> SAFETY OFFICER : </div>
+        </div>
         <div class="row mt8" style="border-top:1px">
             <p> <u> Description : </u> </p>
             <p> <span t-field="o.description"/> </p>
