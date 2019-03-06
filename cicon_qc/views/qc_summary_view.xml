@@ -19,6 +19,19 @@
 		</record>
 
 
+        <record model="ir.ui.view" id="cic_qc_summary_pivot_view">
+			<field name="name">cic.qc.summary.pivot</field>
+			<field name="model">cic.qc.summary</field>
+			<field name="arch" type="xml" >
+				<pivot string="QC Summary Sheet">
+                    <field name="partner_id" type="row"/>
+                    <field name="project_id" type="row"/>
+                    <field name="dn_date" type="col" />
+                </pivot>
+            </field>
+        </record>
+
+
          <record model="ir.ui.view" id="cic_qc_cert_line_tree_view">
 			<field name="name">cic.qc.cert.line.tree</field>
 			<field name="model">cic.qc.cert.line</field>
@@ -111,6 +124,7 @@
                     <field name="dn_line_ids" />
                     <field name="order_codes"/>
                     <field name="heat_numbers"/>
+                    <filter name="this_year" string="This Year" domain="[('dn_date','&gt;=',(context_today()).strftime('%%Y-01-01')),('dn_date','&lt;=', (context_today()+relativedelta(years=1)).strftime('%%Y-01-01'))]"/>
                 </search>
 			</field>
         </record>
@@ -157,7 +171,9 @@
 
         <record model="ir.actions.act_window" id="action_cic_qc_summary">
             <field name="name" >QC Summary Sheet</field>
+            <field name="view_mode">tree,form,pivot</field>
             <field name="res_model">cic.qc.summary</field>
+            <field name="context">{'search_default_this_year': 1}</field>
        </record>
 
 
