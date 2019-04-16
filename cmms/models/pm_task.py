@@ -73,7 +73,7 @@ class CmmsPmScheduleMaster(models.Model):
     _inherits = {'cmms.base.schedule': 'base_sch_id'}
 
     @api.one
-    @api.depends('rrule_type', 'date', 'interval', 'end_date', 'week_day', 'select1', 'end_type','week_list','byday')
+    @api.depends('rrule_type', 'date', 'interval', 'end_date', 'week_day', 'select1', 'end_type','week_list','byday', 'day')
     def compute_rule_string(self):
         """
         Compute rule string according to value type RECUR of iCalendar from the values given.
@@ -95,7 +95,13 @@ class CmmsPmScheduleMaster(models.Model):
                 if self.select1 =='day':
                     return ';BYDAY=' + str(self.byday) + str(self.week_list)
                 elif self.select1 =='date':
-                    return ';BYMONTHDAY=' + str(self.day)
+                    if self.day > 28:
+                        _days = list(range(self.day, 27, -1))
+                        _days.sort()
+                        _days_str = ",".join(str(d) for d in _days)
+                        return ';BYMONTHDAY='+ _days_str + ';BYSETPOS=-1'
+                    else:
+                        return ';BYMONTHDAY=' + str(self.day)
             return ''
 
         def get_end_date():
@@ -188,7 +194,11 @@ class CmmsPmScheduleMaster(models.Model):
         _dm['machine_ids'] = [('id', 'not in', _machines._ids),('pm_scheme_id','=',self.pm_scheme_id.id),('company_id', '=', self.company_id.id ) ]
         return {'domain': _dm }
 
-
+    @api.onchange('day')
+    def _day_change(self):
+        if self.day > 28:
+            _warn = {'title': 'Date Warning !', 'message': "Date > 28, schedule will be adjusted to available last day of the month!"}
+            return {'warning': _warn}
 
 
     #TODO:Need to remove
