@@ -19,8 +19,8 @@
 </template>
 
         <template id="tech_cicon_layout_header">
-    <div class="header">
-        <div class="row">
+     <div class="header">
+        <div class="row zero_min_height">
             <div class="col-xs-2">
                 <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 70px;"/>
             </div>
@@ -46,10 +46,16 @@
                 </p>
             </div>
             <!--<div class="col-xs-8 text-left" style="margin-top:25px;padding-left:25px;" t-field="company.rml_header1"/>-->
-           <div class="col-xs-2 text-center">
+            <div class="col-xs-2 text-center">
                 <img t-if="company.logo2" t-att-src="'data:image/png;base64,%s' % company.logo2" style="max-height: 65px;"/>
             </div>
         </div>
+        <div class="row zero_min_height">
+            <div class="col-xs-12 text-right">
+                <small>Appendix: 4D, Issue: 4, Rev.: 0</small>
+            </div>
+        </div>
+
         <!--<div class="row">-->
             <!--<div class="col-xs-12">-->
                 <!--<p>-->
