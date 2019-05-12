@@ -13,13 +13,15 @@
                 <t t-set="parent_company" t-value="company.parent_id or company"></t>
             </t>
 
+
+
            <t t-call="cicon_tech.tech_cicon_layout_header" />
            <t t-raw="0" />
            <t t-call="cicon_tech.tech_cicon_layout_footer" />
-</template>
+  </template>
 
         <template id="tech_cicon_layout_header">
-     <div class="header">
+       <div class="header">
         <div class="row zero_min_height">
             <div class="col-xs-2">
                 <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 70px;"/>
@@ -52,7 +54,12 @@
         </div>
         <div class="row zero_min_height">
             <div class="col-xs-12 text-right">
-                <small>Appendix: 4D, Issue: 4, Rev.: 0</small>
+                <t t-if="o._name == 'cicon.tech.rfi'">
+                   <small>Appendix: 4B, Issue: 4, Rev.: 0  </small>
+                </t>
+                <t t-if="o._name == 'tech.submittal.revision'">
+                   <small>Appendix: 4D, Issue: 4, Rev.: 0 </small>
+                </t>
             </div>
         </div>
 
