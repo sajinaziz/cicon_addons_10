@@ -24,7 +24,7 @@ class ReportMachineAnalysisSummary(models.AbstractModel): # Report File Name
             'doc_model': report.model,
             'docs': _docs,
             'heading': self._context.get('heading'),
-            'year' : self._context.get('year'),
+            'year': self._context.get('year'),
             'get_category': self._get_categories,
             'get_machine': self._get_machines,
             'get_breakdown_count': self._job_order_count,
@@ -41,6 +41,7 @@ class ReportMachineAnalysisSummary(models.AbstractModel): # Report File Name
         worksheet = workbook.add_worksheet("Machine")
         row = 0
         col = 5
+        _machineSno = 0
         worksheet.write(row, 0, 'Sn#')
         worksheet.write(row, 1, 'TYPE')
         worksheet.write(row, 2, 'CATEGORY')
@@ -53,20 +54,28 @@ class ReportMachineAnalysisSummary(models.AbstractModel): # Report File Name
         worksheet.write(row, 18, 'TOTAL')
         for _mType in self._get_report_data(None):
             for _mCateg in self._get_categories(_mType):
-                for _macs in self._get_machines(_mType , _mCateg):
+                for _macs in self._get_machines(_mType, _mCateg):
                     _mac = _macs.get('machine_id')
+                    _machineSno += 1
                     row += 1
                     col = 5
-                    worksheet.write(row, 0, row)
-                    worksheet.write(row, 1, _mac.type_id.name)
-                    worksheet.write(row, 2, _mac.category_id.name)
-                    worksheet.write(row, 3, _mac.code)
-                    worksheet.write(row, 4, _mac.name)
+                    _val = [_machineSno, _mac.type_id.name, _mac.category_id.name , _mac.code, _mac.name]
+                    worksheet.write_row(row, 0, tuple(_val))
                     worksheet.write(row, 5, 'EXPENSE')
+
+                    _jobCount = self._job_order_count(_mac.id)
+                    _idleTime = _jobCount.get('idle_time')
+
+                    worksheet.write_row(row+1, 0, tuple(_val))
+                    worksheet.write(row + 1, 5, 'IDLE TIME')
+
                     for _mn in _calender:
                         col += 1
                         worksheet.write(row, col, _macs.get(_mn))
-                    worksheet.write_formula(row, 18, '=SUM(G' + str(row) + ':' + 'R' + str(row) + ')')
+                        worksheet.write(row + 1, col, self._get_time_in_hours(_idleTime.get(_mn)))
+                    worksheet.write_formula(row, 18, '=SUM(G' + str(row+1) + ':' + 'R' + str(row+1) + ')')
+                    row += 1
+                    worksheet.write_formula(row, 18, '=SUM(G' + str(row+1) + ':' + 'R' + str(row+1) + ')')
         workbook.close()
         output.seek(0)
         _r_name = 'Machine Analysis -' + datetime.today().strftime('%d-%b-%Y')
@@ -103,6 +112,14 @@ class ReportMachineAnalysisSummary(models.AbstractModel): # Report File Name
             return (_diff.days, (_diff.seconds / 60))
         else:
             return (0 , 0)
+
+    def _get_time_in_hours(self, time_tuple):
+        if time_tuple:
+            _days = time_tuple[0] * 24
+            _hours = time_tuple[1].split(':')[0]
+            _mins = time_tuple[1].split(':')[1]
+            _total = int(_days) + int(_hours)
+            return _total
 
     def _job_order_count(self, _mid):
         year = self._context.get('year')
