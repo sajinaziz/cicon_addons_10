@@ -143,9 +143,11 @@ class ReportMachineAnalysisSummary(models.AbstractModel): # Report File Name
             _job_orders_on_month = _job_orders.filtered(lambda a: fields.Date.from_string(a.job_order_date).strftime('%B %Y') == r['job_order_date:month'])
             for _job in _job_orders_on_month:
                 if _job.job_order_type == 'breakdown':
-                    _idle_mins.append(self._get_time_diff_min(_job.breakdown_datetime, _job.work_end_datetime))
-                elif _job.job_order_type == 'preventive':
-                    _idle_mins.append(self._get_time_diff_min(_job.work_start_datetime, _job.work_end_datetime))
+                    _idle_mins.append(self._get_time_diff_min(_job.breakdown_datetime,_job.work_end_datetime))
+                #TODO: Make it selection options
+                #elif _job.job_order_type == 'preventive':
+                    #idle_mins.append(self._get_time_diff_min(_job.work_start_datetime, _job.work_end_datetime))
+
             _idle_time_dict[r['job_order_date:month'].replace(year, '').strip()] = (sum([m[0] for m in _idle_mins]), str((sum([m[1] for m in _idle_mins])/60)).zfill(2) + ':' +  str(sum([m[1] for m in _idle_mins]) % 60).zfill(2))
         breakdown_dict.update(idle_time=_idle_time_dict)
         _total_jobOrder = sum(_breakdown_entry.values())
