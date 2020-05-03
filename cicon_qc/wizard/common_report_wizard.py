@@ -12,10 +12,17 @@ class QcCommonReportWizard(models.TransientModel):
                                              domain="[('attribute_id.name','=','Steel Origin' )]", string='Origins')
     show_consultant = fields.Boolean('Show Consultant', default=False)
     hide_reject = fields.Boolean('Hide Rejected', default=False)
+    hide_invalid = fields.Boolean('Hide Invalid Projects',
+                                  help="Hide all projects not applicable in selected Origins", default=False)
     show_filter = fields.Boolean('Filter Options', default=False)
     company_id = fields.Many2one('res.company', 'Company', default=lambda self: self.env.user.company_id)
     partner_id = fields.Many2one('res.partner', string='Partner')
     job_site_ids = fields.Many2many('cicon.job.site', string='Job Sites')
+
+    @api.onchange('show_filter')
+    def onchange_filter(self):
+        self.ensure_one()
+        self.hide_invalid = False
 
     @api.multi
     def show_report(self, data):
@@ -35,13 +42,20 @@ class QcCommonReportWizard(models.TransientModel):
                     _qry.append(('id', 'not in', self.origin_value_ids._ids))
             _origin_ids = self.env['product.attribute.value'].search(_qry)
             job_sites = []
+            if self.hide_invalid:
+                job_sites = self.with_context(ctx).env['qc.material.approval'].search(
+                    [('origin_attrib_value_id', 'in', _origin_ids._ids)]).mapped('job_site_id').filtered(
+                    lambda a: a.archive is False)
+            else:
+                job_sites = self.with_context(ctx).env['qc.material.approval'].search([]).mapped(
+                    'job_site_id').filtered(lambda a: a.archive is False)
+
             if self.show_filter:
                 if self.partner_id and self.job_site_ids:
                     job_sites = self.with_context(ctx).job_site_ids
-                if self.partner_id:
+                if self.partner_id and self.job_site_ids is False:
                     job_sites = self.with_context(ctx).env['cicon.job.site'].search[('partner_id', '=', self.partner_id.id)]
-            else:
-                job_sites = self.with_context(ctx).env['qc.material.approval'].search([]).mapped('job_site_id').filtered(lambda a: a.archive == False)
+
             _datas = {'origin_ids': _origin_ids._ids}
             return self.with_context(ctx).env['report'].get_action(job_sites, report_name='cicon_qc.qc_material_approval_report_template',data=_datas)
 

@@ -18,6 +18,7 @@
                             <field name="option_select" widget="radio"/>
                             <field name="show_consultant"/>
                             <field name="hide_reject"/>
+                            <field name="hide_invalid" attrs="{'readonly':[('show_filter','=',True)]}" />
                         </group>
                     </page>
                     <page string="Customer / Projects"  attrs="{'invisible':[('show_filter', '=', False)]}"  >
