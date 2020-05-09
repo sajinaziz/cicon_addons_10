@@ -143,10 +143,21 @@
                                          <!--<td  style="width:25%"> <span t-field="mline.certificate_id.issued_date" t-field-options='{"format": "dd-MMM-yyyy"}' /> </td>-->
                                      </tr>
                                 </tbody>
+
                             </table>
                         </td>
                     </tr>
+                 <tr>
+                     <td colspan="6">
+                            <mark>
+                                * As per Mill Test Certificates(MTC), all steel delivered shall satisfy BS 4449:2005, Grade B500B
+                            </mark>
+                        </td>
+                    </tr>
                 </tbody>
+
+
+
             </table>
         </div>
         </t>
