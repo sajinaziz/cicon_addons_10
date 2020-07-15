@@ -95,6 +95,31 @@
                             <page string="Parts">
                                 <field name="spare_part_ids"/>
                             </page>
+                            <page string="New Details">
+                                <group>
+                                    <group>
+                                        <field name="premises_id" options="{'no_open': True,'no_create': True}"/>
+                                        <field name="business_unit_id" options="{'no_open': True,'no_create': True}"/>
+                                        <field name="profit_centre_id" options="{'no_open': True,'no_create': True}"/>
+                                    </group>
+                                    <group>
+                                        <field name="capacity" />
+                                    </group>
+
+                                </group>
+                            </page>
+                            <page string="Legacy Information">
+                                <group>
+                                    <group>
+                                        <field name="old_code" readonly="1"/>
+                                        <field name="old_name" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="old_type_id" readonly="1" options="{'no_open': True,'no_create': True}"/>
+                                        <field name="old_category_id" readonly="1" options="{'no_open': True,'no_create': True}"/>
+                                    </group>
+                                </group>
+                            </page>
                         </notebook>
 
                     </sheet>
@@ -113,9 +138,14 @@
          <field name="arch" type="xml">
              <search>
                  <field name="code"/>
+                 <field name="old_code"/>
+                 <field name="name"/>
+                 <field name="old_name"/>
                  <field name="category_id" widget="selection"/>
-                 <field name="group_id" widget="selection"/>
                  <field name="type_id" widget="selection"/>
+                 <field name="premises_id" widget="selection"/>
+                 <field name="business_unit_id" widget="selection"/>
+                 <field name="profit_centre_id" widget="selection"/>
                  <field name="company_id" widget="selection"/>
                  <group string="Group By">
                      <filter name="group_by_company" string="Company" context="{'group_by': 'company_id'}" />
@@ -188,7 +218,9 @@
             <field name="type">tree</field>
             <field name="arch" type="xml" >
                 <tree string="Machine Type" editable="bottom">
+                    <field name="sequence" widget="handle"/>
                     <field name="name"/>
+                    <field name="active"/>
                 </tree>
             </field>
             </record>
@@ -224,7 +256,9 @@
             <field name="type">tree</field>
             <field name="arch" type="xml" >
                 <tree string="Machine Category" editable="bottom">
+                    <field name="sequence" widget="handle"/>
                     <field name="name"/>
+                    <field name="active" />
                 </tree>
             </field>
             </record>
@@ -260,6 +294,63 @@
                 </tree>
             </field>
         </record>
+
+        <!--        New Update Start-->
+        <record model="ir.ui.view" id="cmms_machine_premises_tree_view">
+            <field name="name">cmms.machine.premises.tree</field>
+            <field name="model">cmms.machine.premises</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml" >
+                <tree string="Premises" editable="bottom">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_cmms_machine_premises">
+            <field name="name" >Premises</field>
+            <field name="res_model">cmms.machine.premises</field>
+        </record>
+
+
+             <record model="ir.ui.view" id="cmms_machine_business_unit_tree_view">
+            <field name="name">cmms.business.unit.tree</field>
+            <field name="model">cmms.business.unit</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml" >
+                <tree string="Business Unit" editable="bottom">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_cmms_business_unit">
+            <field name="name" >Business Unit</field>
+            <field name="res_model">cmms.business.unit</field>
+        </record>
+
+
+
+             <record model="ir.ui.view" id="cmms_profit_centre_tree_view">
+            <field name="name">cmms.profit.centre.tree</field>
+            <field name="model">cmms.profit.centre</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml" >
+                <tree string="Profit Centre" editable="bottom">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_cmms_profit_centre">
+            <field name="name" >Profit Centre</field>
+            <field name="res_model">cmms.profit.centre</field>
+        </record>
+
+        <!--        New Update End-->
 
         <record model="ir.ui.view" id="cmms_pm_scheme_form_view">
         <field name="name">cmms.pm.scheme.form</field>
@@ -434,15 +525,31 @@
             <field name="res_model">cmms.machine.transfer</field>
         </record>
 
+
+         <record model="ir.actions.act_window" id="cmms_machine_config_action">
+             <field name="name" >Machines Config</field>
+             <field name="res_model">cmms.machine</field>
+             <field name="view_mode">tree,form </field>
+        </record>
+
+
+
         <menuitem  parent="cmms_machinery" id="cmms_machine_transfer" action ="cmms_machine_transfer_action" groups="group_cmms_user" sequence="2" />
 
         <menuitem name="Reports" parent="cmms_menu" id="cmms_report_menu" sequence="70"/>
         <menuitem name="Configuration" parent="cmms_menu" id="cmms_config_menu" sequence="99"/>
         <menuitem name="Machine Config" parent="cmms_config_menu" id="cmms_machine_config_menu" sequence="1"/>
+
         <menuitem  parent="cmms_machine_config_menu" id="cmms_machine_type_menu" sequence="1" action="action_cmms_machine_type"/>
         <menuitem  parent="cmms_machine_config_menu" id="cmms_machine_categ_menu" sequence="2" action="action_cmms_machine_category"/>
         <menuitem  parent="cmms_machine_config_menu" id="cmms_machine_group_menu" sequence="3" action="action_cmms_machine_group"/>
         <menuitem  parent="cmms_machine_config_menu" id="cmms_machine_location_menu" action="action_cmms_machine_location" sequence="4" />
+
+        <menuitem  parent="cmms_machine_config_menu" id="cmms_machine_premises_menu" action="action_cmms_machine_premises" sequence="5" />
+        <menuitem  parent="cmms_machine_config_menu" id="cmms_machine_business_unit_menu" action="action_cmms_business_unit" sequence="6" />
+        <menuitem  parent="cmms_machine_config_menu" id="cmms_machine_profit_centre_menu" action="action_cmms_profit_centre" sequence="7" />
+
+        <menuitem  parent="cmms_machine_config_menu" id="cmms_machine_config_view_menu" sequence="8" groups="base.group_no_one" action="cmms_machine_config_action"/>
 
      </data>
 </odoo>

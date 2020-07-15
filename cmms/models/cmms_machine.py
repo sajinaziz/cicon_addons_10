@@ -20,6 +20,8 @@ class CmmsMachineType(models.Model):
     _log_access = False
 
     name = fields.Char('Machine Type', size=64, help="Machine Type", required=True)
+    active = fields.Boolean('Active', default=True)
+    sequence = fields.Integer('Sequence')
 
     _sql_constraint = [("unique_machine_type", "UNIQUE(name)", "Machine Type Must be Unique")]
 
@@ -30,6 +32,8 @@ class CmmsMachineCategory(models.Model):
     _log_access = False
 
     name = fields.Char('Machine Category', size=64, help="Machine Category", required=True)
+    sequence = fields.Integer('Sequence')
+    active = fields.Boolean('Active', default=True)
 
     _sql_constraint = [("unique_machine_categ", "UNIQUE(name)", "Machine Category Must be Unique")]
 
@@ -62,6 +66,44 @@ class CmmsPmScheme(models.Model):
         self.ensure_one()
         default = dict(default or {}, name=_('%s (copy)') % self.name)
         return super(CmmsPmScheme, self).copy(default)
+
+
+class MachinePremises(models.Model):
+    _name = 'cmms.machine.premises'
+    _description = "Premises"
+
+    name = fields.Char('Premises', size=50, required=True)
+
+    _sql_constraints = [('unique_premises', 'unique(name)', 'Premises Must be unique')]
+
+
+class BusinessUnit(models.Model):
+    _name = 'cmms.business.unit'
+    _description = "Business Unit"
+
+    name = fields.Char('Business Unit', size=50, required=True)
+    sequence = fields.Integer('Sequence')
+
+    _sql_constraints = [('unique_business_unit', 'unique(name)', 'Business Unit Must be unique')]
+
+
+class ProfitCentre(models.Model):
+    _name = 'cmms.profit.centre'
+    _description = "Profit Centre"
+
+    name = fields.Char('Profit Centre', size=50, required=True)
+    sequence = fields.Integer('Sequence')
+
+    _sql_constraints = [('unique_profit_centre', 'unique(name)', 'Profit Centre Must be unique')]
+
+
+# class MachineDivision(models.Model):
+#     _name = 'cmms.machine.division'
+#     _description = "Division"
+#
+#     name = fields.Char('Division', required=True)
+#
+#     _sql_constraints = [('unique_division', 'unique(name)', 'Division Must be unique')]
 
 
 class CmmsMachine(models.Model):
@@ -158,6 +200,24 @@ class CmmsMachine(models.Model):
     location_id = fields.Many2one('cmms.machine.location', string="Location",  track_visibility='onchange')
     previous_machines = fields.Text(compute=_get_last_machines, readonly=True,  strore=False, string="Last Created Machines" )
     job_order_open_count = fields.Integer('Pending Job Orders', compute=compute_joborder_open_count)
+
+    old_code = fields.Char("Old Code", size=10, track_visibility='onchange')
+    old_name = fields.Char("Old Name", track_visibility='onchange')
+
+    old_type_id = fields.Many2one('cmms.machine.type', string='Old Type', ondelete="restrict",
+                              track_visibility='onchange')
+    # category_id, relate to machine category table and store the machine category
+    old_category_id = fields.Many2one('cmms.machine.category', string='Old Category', ondelete="restrict",
+                              track_visibility='onchange')
+
+    business_unit_id = fields.Many2one('cmms.business.unit', 'Business Unit', track_visibility='onchange',
+                                       ondelete="restrict",)
+    premises_id = fields.Many2one('cmms.machine.premises', 'Premises',  track_visibility='onchange',
+                                  ondelete="restrict",)
+    profit_centre_id = fields.Many2one('cmms.profit.centre', 'Profit Centre',  track_visibility='onchange',
+                                       ondelete="restrict",)
+
+    capacity = fields.Float("Capacity", digits=(10, 2))
 
     _sql_constraints = [("unique_machine_code", "UNIQUE(code)", "Machine Code Must be Unique")]
 

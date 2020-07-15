@@ -32,3 +32,6 @@ cmms_job_order_code_super,CmmsJobOrderCode Supervisor,model_cmms_job_order_code,
 cmms_job_store_inv_super,CmmsStoreInvoice Supervisor,model_cmms_store_invoice,group_cmms_supervisor,1,1,1,1
 cmms_machine_transfer_tech,CmmsMachineTransfer Technician,model_cmms_machine_transfer,group_cmms_tech,1,1,1,0
 cmms_machine_transfer_line_tech,CmmsMachineTransferLine Technician,model_cmms_machine_transfer_line,group_cmms_tech,1,1,1,1
+cmms_premises_user,CmmsPremises User,model_cmms_machine_premises,group_cmms_user,1,0,0,0
+cmms_business_unit_user,CmmsBusiUnit User,model_cmms_business_unit,group_cmms_user,1,0,0,0
+cmms_profit_centre_user,CmmsProCentre User,model_cmms_profit_centre,group_cmms_user,1,0,0,0
