@@ -385,6 +385,7 @@ class CmmsMachineTransfer(models.Model):
 class CmmsMachineTransferLine(models.Model):
     _name = 'cmms.machine.transfer.line'
     _description = "Machine Transfer Request Lines"
+    _rec_name = 'machine_id'
 
     transfer_request_id = fields.Many2one('cmms.machine.transfer', string='Transfer Request')
     machine_id = fields.Many2one('cmms.machine', string="Machine", required=True)

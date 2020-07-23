@@ -520,6 +520,19 @@
             </field>
         </record>
 
+
+        <record id="cmms_machine_transfer_search" model="ir.ui.view">
+         <field name="name">cmms.machine.transfer.search</field>
+         <field name="model">cmms.machine.transfer</field>
+         <field name="arch" type="xml">
+             <search>
+                 <field name="name"/>
+                 <field name="line_ids"/>
+                 <field name="source_company_id"/>
+             </search>
+         </field>
+        </record>
+
         <record model="ir.actions.act_window" id="cmms_machine_transfer_action">
             <field name="name" >Machine Transfer</field>
             <field name="res_model">cmms.machine.transfer</field>

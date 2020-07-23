@@ -279,7 +279,7 @@ class CmmsStoreInvoiceLine(models.Model):
 
     #invoice id, invoice id relation
     invoice_id = fields.Many2one('cmms.store.invoice', ondelete='cascade', string='Invoice')
-    invoice_date = fields.Date('Date', related='invoice_id.invoice_date', store=True, readonly=True)
+    invoice_date = fields.Date('Date', related='invoice_id.invoice_date', store=True, index=True, readonly=True)
     #product_id, create relation to product table and store product id
     product_id = fields.Many2one('product.product', string='Product', states={'draft':[('readonly', False)]} ,required=True , readonly=True)
     #product uom id, create a relation to product.uom table and store product units
@@ -297,7 +297,8 @@ class CmmsStoreInvoiceLine(models.Model):
     #job order id, create a relation to job ordr table and store
     job_order_id = fields.Many2one('cmms.job.order', string="Job order", compute=_set_job_order, store=True, readonly=True )
     #machine id, create a relation to machine table and store it
-    machine_id = fields.Many2one('cmms.machine', related='job_order_id.machine_id', string="Machine", store=True, readonly=True )
+    machine_id = fields.Many2one('cmms.machine', related='job_order_id.machine_id', string="Machine", store=True, readonly=True , index=True )
+    machine_category_id = fields.Many2one('cmms.machine.category', related='job_order_id.machine_id.category_id', string='Machine Category', store=True, readonly=True , index=True)
     #company id, create a relation to company table and store company
     company_id = fields.Many2one('res.company', "Company", related="invoice_id.company_id", store=True, readonly=True )
     #spare part type id, create a relation to spare part type table and store it
