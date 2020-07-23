@@ -172,6 +172,7 @@
             <field name="model">cmms.store.invoice.line</field>
             <field name="arch" type="xml">
                 <pivot string="Invoice Line">
+                    <field name="machine_type_id" type="row"/>
                     <field name="machine_category_id" type="row"/>
                     <field name="spare_part_type_id" type="col"/>
                     <field name="amount"  type="measure"/>

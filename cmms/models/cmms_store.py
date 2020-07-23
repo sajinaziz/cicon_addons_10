@@ -299,6 +299,8 @@ class CmmsStoreInvoiceLine(models.Model):
     #machine id, create a relation to machine table and store it
     machine_id = fields.Many2one('cmms.machine', related='job_order_id.machine_id', string="Machine", store=True, readonly=True , index=True )
     machine_category_id = fields.Many2one('cmms.machine.category', related='job_order_id.machine_id.category_id', string='Machine Category', store=True, readonly=True , index=True)
+    machine_type_id = fields.Many2one('cmms.machine.type', related='job_order_id.machine_id.type_id',
+                                          string='Machine Type', store=True, readonly=True, index=True)
     #company id, create a relation to company table and store company
     company_id = fields.Many2one('res.company', "Company", related="invoice_id.company_id", store=True, readonly=True )
     #spare part type id, create a relation to spare part type table and store it
