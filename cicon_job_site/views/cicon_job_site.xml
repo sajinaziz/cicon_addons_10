@@ -36,7 +36,7 @@
                             <field name="partner_id" options="{'no_create':True,'no_open': True}" ain="[('customer','=', True)]" />
                             <field name="name"  placeholder="Project Name" />
                             <field name="consultant_id"  options="{'no_create':True,'no_open': True}"/>
-                            <field name="client_id"  options="{'no_create':True,'no_open': True}"/>/>
+                            <field name="client_id"  options="{'no_create':True,'no_open': True}"/>
                             <field name="company_id" options="{'no_create':True,'no_open': True}" />
                         </group>
                         <group col="4">
@@ -102,6 +102,7 @@
                      <field name="ref" position="after">
                          <field name="is_consultant"/>
                          <field name="is_client"/>
+                         <field name="is_subcontractor" />
                      </field>
                  </field>
         </record>

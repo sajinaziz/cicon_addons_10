@@ -14,7 +14,8 @@ class CiconJobSite(models.Model):
     telephone = fields.Char('Telephone', size=50)
     fax = fields.Char('Fax', size=50)
 
-    consultant_id = fields.Many2one('res.partner', domain="[('is_consultant','=', True)]", string='Consultant',  track_visibility='onchange' )
+    consultant_id = fields.Many2one('res.partner', domain="[('is_consultant','=', True)]", string='Consultant', \
+                                    track_visibility='onchange' )
     client_id = fields.Many2one('res.partner',  domain="[('is_client','=', True)]", string='Client',  track_visibility='onchange')
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.user.company_id)
     active = fields.Boolean('Active', default=True,  track_visibility='onchange')
@@ -38,4 +39,6 @@ class ResPartner(models.Model):
 
     is_consultant = fields.Boolean('Is Consultant')
     is_client = fields.Boolean('Is Client')
+    is_subcontractor = fields.Boolean('Is Subcontractor')
+
 
