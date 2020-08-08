@@ -52,7 +52,8 @@
         <record model="ir.actions.act_window" id="action_res_partners_tech">
             <field name="name" >Customers </field>
             <field name="res_model">res.partner</field>
-            <field name="domain">[('customer','=',True)]</field>
+            <field name="domain">[]</field>
+            <field name="context">{'search_default_customer':1}</field>
         </record>
 
         <menuitem name="Customer / Job Site" parent="tech_menu" id="tech_menu_customer_main" sequence="10"/>

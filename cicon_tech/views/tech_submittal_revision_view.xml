@@ -41,6 +41,7 @@
                         <!--<label for='job_site_id'/>-->
                         <field name="job_site_id" context="{'default_partner_id':partner_id}"  attrs="{'readonly':['|', '|',('id','!=',False),('parent_id','!=',False),('state','=','submitted')]}"
                                     options="{ 'no_create': True,  'no_open':True}"/>
+
                     </group>
                     <group invisible="1">
                         <field name="id" invisible="1"/>
@@ -50,6 +51,9 @@
                         <field name="submittal_id"   invisible="True" attrs="{'required':[('parent_id','!=',False)]}"/>
                         <field name="company_id" invisible="1" />
                         <field name="revision_number" invisible="1"/>
+                    </group>
+                    <group>
+                        <field name="subcontractor_id"  options="{'no_create': True , 'no_open':True}" groups="cicon_tech.group_tech_sub_contract" />
                     </group>
                     <group col='4' span="2">
                         <field name="site_ref_no"/>

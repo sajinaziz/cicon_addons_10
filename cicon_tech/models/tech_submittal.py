@@ -16,9 +16,14 @@ class Submittal(models.Model):
     partner_id = fields.Many2one('res.partner', string="Customer", index=True)
     job_site_id = fields.Many2one('cicon.job.site', "Job Site Name", required=True,
                                   domain="[('partner_id','=',partner_id),('site_ref_no','>','0')]", index=True)
+
+    subcontractor_id = fields.Many2one('res.partner', string='Subcontractor',
+                                       domain=[('is_subcontractor', '=', True)])
+
     site_ref_no = fields.Char(related='job_site_id.site_ref_no', string="Site Ref #", store=False, readonly=True)
     coordinator_id = fields.Many2one('res.users', related='job_site_id.coordinator_id',
                                      string="Coordinated By", store=False,  readonly=True)
+
     company_id = fields.Many2one('res.company', "Company", required=True,
                                  default=lambda self: self.env.user.company_id.id)
     revision_ids = fields.One2many('tech.submittal.revision', 'submittal_id', "Revisions")
