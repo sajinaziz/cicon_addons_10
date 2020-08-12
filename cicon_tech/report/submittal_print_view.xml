@@ -108,9 +108,6 @@
             <div class="row col-xs-12" >
                  <strong> Ref: <span  t-field="o.ref_no" /> </strong>
                     <br/>
-                  <t t-if="o.subcontractor_id">
-                      <span t-field="o.subcontractor_id.ref"/>
-                  </t>
                     <br/>
                     Date : <span t-field="o.submittal_date" />
                     <br/>

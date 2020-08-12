@@ -205,7 +205,7 @@ class SubmittalRevision(models.Model):
         """Change Status on button Click"""
         return self.write({'state': 'approved'})
 
-    def _generate_new_ref(self, job_site_id):
+    def _generate_new_ref(self, job_site_id, subcontractor_id):
         """
             Generates a Code for Submittal revision
             :returns: a dictionary with all information
@@ -226,7 +226,13 @@ class SubmittalRevision(models.Model):
             _sub_count_on_global = _sub_count_id.submittal_common_count + 1
         _prefix = 'CDS-'    # Set default Prefix for Submittal
         # Add up Prefix for Company if set or C
-        _prefix += self.env['res.company'].browse(_company_id).submittal_prefix or 'C'
+        _company_code = self.env['res.company'].browse(_company_id).submittal_prefix or 'C'
+        if subcontractor_id:
+            _subcontract_code = self.env['res.partner'].browse(subcontractor_id).ref
+            if _subcontract_code:
+                _company_code = _subcontract_code
+
+        _prefix += _company_code
         # Create Submittal Code
         _sub_name = _prefix + '-' + str(_sub_count_on_global).zfill(3) + '-' + _job_site.site_ref_no + '-' + str(_sub_count_on_project).zfill(3)
         # Create Submittal Revision Code
@@ -236,13 +242,16 @@ class SubmittalRevision(models.Model):
                 '_sub_count_on_project': _sub_count_on_project,
                 '_sub_count_common': _sub_count_on_global}
 
-    @api.onchange('job_site_id')
+    @api.onchange('job_site_id', 'subcontractor_id')
     def onchange_project(self):
         """
             On Change Project To Set Site information on Current Submittal Revision form
             :raise warning if it job site not include site ref and co ordinates
         """
         if self.job_site_id:
+            _subcontract = False;
+            if self.subcontractor_id:
+                _subcontract = self.subcontractor_id.id
             if self.job_site_id.site_ref_no and self.job_site_id.coordinator_id:
                 rev_no = 0
                 if self.submittal_id:   # if it is revision > 0 then Set Submittal name as it is
@@ -251,7 +260,7 @@ class SubmittalRevision(models.Model):
                         rev_no = self.parent_id.revision_number + 1
                         _ref_no = self.parent_id.submittal_id.name + '-R' + str(rev_no)
                 else:   # if new Submittal with revision 0
-                    _new_submittal = self._generate_new_ref(self.job_site_id.id)
+                    _new_submittal = self._generate_new_ref(self.job_site_id.id, _subcontract)
                     _ref_no = _new_submittal['_ref_no']     # New Code
                     _sub_name = _new_submittal['_sub_name']     # New submittal Name
                 self.site_ref_no = self.job_site_id.site_ref_no # Fields in tech.submittal (master class)
@@ -394,7 +403,7 @@ class SubmittalRevision(models.Model):
         if vals.get('ref_no') is None:  # Check if ref_no , can be blank as form view using it as readonly mode
             if vals.get('name') and vals.get('submittal_id') == False:  # Check it is new Revision
                 # Create new Code for selected Job Site
-                _new_revision = self._generate_new_ref(vals.get('job_site_id'))
+                _new_revision = self._generate_new_ref(vals.get('job_site_id'), vals.get('subcontractor_id'))
                 _new_ref = _new_revision['_ref_no']
                 vals.update({'name': _new_revision['_sub_name']})
                 vals.update({'submittal_common_count': _new_revision['_sub_count_common']})

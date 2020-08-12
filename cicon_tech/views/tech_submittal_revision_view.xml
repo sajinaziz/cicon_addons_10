@@ -34,6 +34,14 @@
                                     <field name="dwg_count" widget="statinfo" string="Documents"   />
                           </button>
                     </div>
+
+                    <group>
+                        <field name="subcontractor_id"  options="{'no_create': True , 'no_open':True}"
+                               groups="cicon_tech.group_tech_sub_contract"
+                               attrs="{'readonly':['|', '|',('id','!=',False),('parent_id','!=',False),('state','=','submitted')]}"
+                        />
+                    </group>
+
                     <group>
                         <!--<label for="partner_id"/>-->
                         <field name="partner_id"  required="True"  domain="[('is_company','=',True),('customer','=',True)]" attrs="{'readonly':['|','|',('id','!=',False),('parent_id','!=',False),('state','=','submitted')]}"
@@ -52,9 +60,7 @@
                         <field name="company_id" invisible="1" />
                         <field name="revision_number" invisible="1"/>
                     </group>
-                    <group>
-                        <field name="subcontractor_id"  options="{'no_create': True , 'no_open':True}" groups="cicon_tech.group_tech_sub_contract" />
-                    </group>
+
                     <group col='4' span="2">
                         <field name="site_ref_no"/>
                         <field name="coordinator_id"/>
