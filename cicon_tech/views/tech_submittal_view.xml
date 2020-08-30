@@ -11,12 +11,25 @@
             <field name="context">{"search_default_current_month":1}</field>
         </record>
 
+          <record model="ir.actions.act_window" id="action_tech_my_submittal_revision_form">
+            <field name="name">My Submittals</field>
+            <field name="res_model">tech.submittal.revision</field>
+            <field name="view_mode">tree,form,pivot</field>
+            <field name="domain">[('state','not in', ('resubmitted','cancel')), '|' ,'|', ('create_uid','=', uid),
+                ('submitted_by','=', uid),('submittal_id.job_site_id.coordinator_id', '=', uid)]</field>
+            <field name="limit">80</field>
+            <field name="context">{"search_default_current_month":1}</field>
+        </record>
+
+
         <menuitem name="Technical" id="tech_menu" groups="group_tech_user,base.group_no_one"/>
         <menuitem name="Technical Submittals" parent="tech_menu" id="tech_menu_submittal" sequence="30"/>
 
+        <menuitem name="My Submittals &amp; Revisions" parent="tech_menu_submittal" id="tech_menu_my_submittal_revision_list"
+                  action="action_tech_my_submittal_revision_form" sequence="10" />
 
         <menuitem name="Submittals &amp; Revisions" parent="tech_menu_submittal" id="tech_menu_submittal_revision_list"
-                  action="action_tech_submittal_revision_form" sequence="10" />
+                  action="action_tech_submittal_revision_form" sequence="20" groups="cicon_tech.group_tech_doc_controller" />
 
         <!--<record model="ir.actions.act_window" id="action_project_tree_view">-->
             <!--<field name="name">Manage Customer Projects</field>-->
