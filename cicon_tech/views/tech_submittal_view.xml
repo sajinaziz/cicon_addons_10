@@ -15,8 +15,9 @@
             <field name="name">My Submittals</field>
             <field name="res_model">tech.submittal.revision</field>
             <field name="view_mode">tree,form,pivot</field>
-            <field name="domain">[('state','not in', ('resubmitted','cancel')), '|' ,'|', ('create_uid','=', uid),
-                ('submitted_by','=', uid),('submittal_id.job_site_id.coordinator_id', '=', uid)]</field>
+            <field name="domain">[('state','not in', ('resubmitted','cancel')), '|' ,'|', '|', ('create_uid','=', uid),
+                ('submitted_by','=', uid),('submittal_id.job_site_id.coordinator_id', '=', uid),
+                ('submittal_id.job_site_id.delegated_id', '=', uid)]</field>
             <field name="limit">80</field>
             <field name="context">{"search_default_current_month":1}</field>
         </record>

@@ -25,9 +25,11 @@ class CiconCustJobSite(models.Model):
 
     project_id = fields.Many2one('project.project', 'Project', domain="[('partner_id','=',partner_id)]",
                                  help="Link with Project Management or leave it blank")
-    site_ref_no = fields.Char('Site Ref #', size=20,help="Unique Site Reference, Using in Submittal reference Number")
+    site_ref_no = fields.Char('Site Ref #', track_visibility='onchange', size=20,help="Unique Site Reference, Using in Submittal reference Number")
     coordinator_id = fields.Many2one('res.users', 'Co-ordinated By', help="Site Coordinator",
-                                     domain="[('login','!=','admin')]")
+                                     domain="[('login','!=','admin')]" , track_visibility='onchange')
+    delegated_id = fields.Many2one('res.users', 'Delegated User', help="Delegated Site Coordinator",
+                                     domain="[('login','!=','admin')]", track_visibility='onchange')
     site_contact_ids = fields.One2many('tech.project.contact', 'job_site_id', "Job Site Contacts")
     last_site_ref = fields.Char(compute=_get_last_site_ref, string='Previous Site Reference',
                                 readonly=True, store=False, help="Last created Site Reference")
@@ -36,7 +38,7 @@ class CiconCustJobSite(models.Model):
     site_category = fields.Selection([('S', 'S'), ('C', 'C')], string='Category', default='S', required=True,
                                      help="Site Category:\n"
                                           "- S: Project Sites\n"
-                                          "- C: Cage Division\n"
+                                          "- C: Cage Division\n" , track_visibility='onchange'
                                      )
     _sql_constraints = [('unique_site_ref', 'UNIQUE(site_ref_no)', 'Unique Site Reference')]
 

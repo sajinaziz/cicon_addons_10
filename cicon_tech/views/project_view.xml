@@ -126,7 +126,8 @@
                             <field name="last_site_ref" attrs="{'invisible': [('submittal_count','>', 0)]}" />
                             <field name="site_ref_no" required="True" attrs="{'readonly': [('submittal_count','>', 0)]}"/>
                             <field name="last_submittal_date"/>
-                            <field name="coordinator_id" />
+                            <field name="coordinator_id" options="{'no_create':True,'no_open': True}"  />
+                            <field name="delegated_id" options="{'no_create':True,'no_open': True}"  />
                         </group>
                         <field name="site_contact_ids">
                             <tree string="Project Contacts" editable="bottom">
