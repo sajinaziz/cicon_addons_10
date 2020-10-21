@@ -22,6 +22,7 @@ class CmmsMachineType(models.Model):
     name = fields.Char('Machine Type', size=64, help="Machine Type", required=True)
     active = fields.Boolean('Active', default=True)
     sequence = fields.Integer('Sequence')
+    name_report = fields.Char('Display Type')
 
     _sql_constraint = [("unique_machine_type", "UNIQUE(name)", "Machine Type Must be Unique")]
 

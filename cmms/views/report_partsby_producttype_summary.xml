@@ -40,7 +40,7 @@
                         <tbody>
                             <t t-foreach="get_machine_types()" t-as="_mtype">
                                 <tr>
-                                    <td colspan="2" class="text-center"> <strong t-esc="_mtype.name" /> </td>
+                                    <td colspan="2" class="text-center"> <strong t-esc="_mtype.name_report" /> </td>
                                 </tr>
                                 <tr t-foreach="get_ptypes_for_mtype(_mtype.id)" t-as="tp">
                                     <td> <span t-esc="tp.name"/> </td>
