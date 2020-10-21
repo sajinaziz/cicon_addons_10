@@ -59,7 +59,7 @@ class ReportPartsbyProductTypeSummary(models.AbstractModel): # Report File Name
         return _categ_sort
 
     def _get_machine_types(self):
-        _categs = self._inv_lines.mapped('machine_id.type_id')
+        _categs = self._inv_lines.mapped('machine_id.type_id').sorted(lambda t: t.sequence)
         return _categs
 
     def _get_ptypes_for_mtype(self,categ):

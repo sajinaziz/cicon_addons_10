@@ -36,7 +36,7 @@ class InventoryExpenseReports(models.AbstractModel): # Report File Name
         if self._context.get('company_id'):
             _qry.append(('company_id','=', self._context.get('company_id')))
         self._inv_lines = self.env['cmms.store.invoice.line'].search(_qry)
-        _types = self._inv_lines.mapped('machine_id.type_id')
+        _types = self._inv_lines.mapped('machine_id.type_id').sorted(lambda t: t.sequence)
         return _types
 
     def _get_categories(self, _type):
