@@ -155,6 +155,7 @@
                 <search string="Job Order" >
                     <field name="name"/>
                     <field name="machine_id"/>
+                    <field name="work_hour" />
                     <field name="status_id" widget="selection"/>
                     <filter name="this_month" string="This Month" domain="[('job_order_date','&gt;=',(context_today()).strftime('%%Y-%%m-01')),('job_order_date','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01'))]" />
                     <seperator/>

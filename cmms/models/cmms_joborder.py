@@ -53,6 +53,17 @@ class CmmsJobOrder(models.Model):
                 _wh = _wh_hour + _wh_mod_min/60.0
                 rec.work_hour = float(_wh)
 
+    def _search_tat(self, operator, value):
+        res = []
+        assert operator in ('>=', '>', '=') and type(value) in (int, float), 'Operation not supported'
+        self.env.cr.execute("""   SELECT id from cmms_job_order
+                WHERE reported_datetime IS NOT NULL  and work_end_datetime  IS NOT NULL AND job_order_type = 'breakdown'  AND 
+                (DATE_PART('day', work_end_datetime  - reported_datetime ) * 24 +  
+                DATE_PART('hour', work_end_datetime - reported_datetime)) >=  %s  ;""", (value,))
+        res_ids = [x[0] for x in self.env.cr.fetchall()]
+        res.append(('id', 'in', res_ids))
+        return res
+
     @api.model
     def _get_default_status(self):
         """ to  find out the default job order status   """
@@ -62,7 +73,7 @@ class CmmsJobOrder(models.Model):
             return _status
 
     @api.multi
-    @api.depends('work_end_datetime','job_order_date')
+    @api.depends('work_end_datetime', 'job_order_date')
     def _get_job_completed_date(self):
         for rec in self:
             if rec.work_end_datetime:
@@ -142,7 +153,7 @@ class CmmsJobOrder(models.Model):
     # total amount, calculate total amount using _calc_total function
     total_amount = fields.Float(string="Total Amount", compute=_calc_total)
     #work hour, calulate the wrk hour using _calc_total function
-    work_hour = fields.Float(string='Work Hours', compute=_calc_total)
+    work_hour = fields.Float(string='Work Hours', compute=_calc_total, search=_search_tat)
 
     _order = 'name desc'
 
