@@ -79,6 +79,8 @@
 
         <template id="tech_cicon_layout_footer">
     <div class="footer">
+
+
         <div class="row zero_min_height">
             <div  style="border-top: 1px solid black;">
         </div>
@@ -262,10 +264,22 @@
                     </t>
                 </div>
             </div>
-            <div class="row">
+            <div class="row mb8">
                 <div class="col-xs-6 col-xs-offset-2">
                           <span t-esc="o.enclosures"/>
                 </div>
+            </div>
+
+            <div class="row">
+               <t t-if="o and 'submittal_id' in o">
+                   <table class="table table-bordered table-sm">
+                       <tr>
+                           <td style="width:33%" class="text-center"> <span t-field="o.bbs_weight"/> </td>
+                           <td style="width:33%"  class="text-center"> <span t-field="o.total_dwg_count"/> </td>
+                           <td style="width:33%"  class="text-center"> <span t-field="o.total_tonnage_count"/> </td>
+                       </tr>
+                   </table>
+                </t>
             </div>
             <!--<div class="row">-->
                   <!--<div class="col-xs-4">-->

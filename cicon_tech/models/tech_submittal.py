@@ -11,6 +11,17 @@ class Submittal(models.Model):
     _name = 'tech.submittal'
     _description = "Technical Submittal"
 
+    @api.multi
+    def _calc_totals(self):
+        for rec in self:
+            _previous_ids = self.search([('job_site_id', '=', rec.job_site_id.id),
+                                         ('submittal_project_count', '<=', rec.submittal_project_count)])
+
+            _revision_ids = _previous_ids.mapped('revision_ids')
+            _valid_ids = _revision_ids.filtered(lambda x: x.state not in ('resubmitted', 'cancel'))
+            rec.total_dwg_count = sum(x.dwg_count for x in _valid_ids)
+            rec.total_tonnage_count = sum(x.bbs_weight for x in _valid_ids)
+
     # unique Submittal Code generated from class 'tech.submittal.revision'
     name = fields.Char('Submittal Ref',  required=True, index=True)
     partner_id = fields.Many2one('res.partner', string="Customer", index=True)
@@ -31,6 +42,9 @@ class Submittal(models.Model):
     submittal_common_count = fields.Integer('Submittal Count Global')
     # Count on submittal per job site  just to ease the generation of Reference Code in  class 'tech.submittal.revision'
     submittal_project_count = fields.Integer('Submittal Project Count')
+
+    total_tonnage_count = fields.Float('Total Tonnage', compute=_calc_totals, decimal=(8, 2), readonly=True, store=False)
+    total_dwg_count = fields.Integer('Total Drawings', compute=_calc_totals, readonly=True, Store=False)
 
     @api.model
     def create(self, vals):

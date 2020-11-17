@@ -174,7 +174,13 @@
                         <field name="enclosures"/>
                     </group>
                     <group>
-                        <field name="total_draft_time" widget="float_time"/>
+                        <group>
+                            <field name="total_tonnage_count"/>
+                            <field name="total_dwg_count"/>
+                        </group>
+                        <group>
+                            <field name="total_draft_time" widget="float_time"/>
+                        </group>
                     </group>
 
                 </sheet>
