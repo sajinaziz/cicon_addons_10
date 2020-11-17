@@ -47,7 +47,7 @@
                                         <small>  AUTHORIZED SIGNATURE </small>
                                     </div>
                                     <div class="col-xs-6 text-right">
-                                        <small>  DOC REF: RCC-0221-E(Issue 01) </small>
+                                        <small> <span t-field="o.name" /> </small>
                                     </div>
                             </div>
                             </div>
