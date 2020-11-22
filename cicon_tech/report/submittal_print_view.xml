@@ -84,6 +84,19 @@
         <div class="row zero_min_height">
             <div  style="border-top: 1px solid black;">
         </div>
+
+        <div class="col-xs-12 mt4">
+               <t t-if="o and 'submittal_id' in o">
+                   <table class="table table-bordered table-sm">
+                       <tr>
+                           <td style="width:33%" class="text-center"> <span t-field="o.bbs_weight"/> </td>
+                           <td style="width:33%" class="text-center"> <span t-field="o.total_dwg_count"/> </td>
+                           <td style="width:33%" class="text-center"> <span t-field="o.total_tonnage_count"/> </td>
+                       </tr>
+                   </table>
+                </t>
+         </div>
+
         <div class="text-left col-xs-8 small">
             <t t-if="o and 'submitted_by' in o">
                 Prepared By:  <span t-field="o.submitted_by.name"/>
@@ -112,14 +125,12 @@
                     <br/>
                     <br/>
                     Date : <span t-field="o.submittal_date" />
-                    <br/>
-                    <br/>
             </div>
             <!--<div class="row col-xs-4 text-right">-->
                 <!--<img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.ref_no , 600, 100)" style="width:300px;height:30px;"/>-->
             <!--</div>-->
 
-             <div class="row col-xs-12">
+             <div class="row col-xs-12 mt4">
                     <strong t-field="o.partner_id.name" /> <br/>
                     P.O Box: <span t-field="o.job_site_id.po_box"/>  <br/>
                     Tel.:  <span t-field="o.job_site_id.telephone" /> <br/>
@@ -270,17 +281,7 @@
                 </div>
             </div>
 
-            <div class="row">
-               <t t-if="o and 'submittal_id' in o">
-                   <table class="table table-bordered table-sm">
-                       <tr>
-                           <td style="width:33%" class="text-center"> <span t-field="o.bbs_weight"/> </td>
-                           <td style="width:33%"  class="text-center"> <span t-field="o.total_dwg_count"/> </td>
-                           <td style="width:33%"  class="text-center"> <span t-field="o.total_tonnage_count"/> </td>
-                       </tr>
-                   </table>
-                </t>
-            </div>
+
             <!--<div class="row">-->
                   <!--<div class="col-xs-4">-->
                        <!--&lt;!&ndash;<img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.ref_no , 600, 100)" style="width:300px;height:30px;"/>&ndash;&gt;-->
