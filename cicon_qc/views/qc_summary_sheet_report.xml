@@ -103,7 +103,11 @@
                                 <tbody>
                                 <tr t-foreach="o.dn_line_ids" t-as="dline">
                                     <!--<td> <span t-field="dline.dn_no" /> </td>-->
-                                    <td> <span t-field="dline.delivery_order_id.name" /> </td>
+                                    <td> <span t-field="dline.delivery_order_id.name" />
+                                        <t t-if="dline.customer_order_id">
+                                            (<span t-field="dline.customer_order_id.name"/>)
+                                        </t>
+                                    </td>
                                     <td>
                                         <span t-esc="', '.join(map(lambda  x:x.name, dline.order_code_ids))"/>
                                     </td>
