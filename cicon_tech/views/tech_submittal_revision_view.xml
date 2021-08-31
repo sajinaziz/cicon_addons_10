@@ -296,6 +296,8 @@
                 <separator/>
                 <filter name="submittal_today_filter" string="Today" domain="[('submittal_date','&gt;=',time.strftime('%%Y-%%m-%%d'))]" help="Submittal Today" icon="terp-project"/>
                 <separator/>
+                <filter name="submittal_previous_day_filter" string="Yesterday" domain="[('submittal_date','=',(context_today()-datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]" help="Submittal Yesterday" />
+                <separator/>
                 <filter name="my_submittal" string="My Submittal" domain="[('submitted_by','=',uid)]" help="My Submittal" icon="terp-project"/>
                 <!--<filter name="my_submittal_current_month" string="My Submittals on this Month" domain="[ ('submitted_by','=',uid),('submittal_date','&gt;=',time.strftime('%%Y-%%m-01'))]" help="My Submittal Current Month" icon="terp-project"/>-->
 
