@@ -6,8 +6,24 @@
           <tr style="page-break-inside:avoid!important;page-break-after:auto">
                 <td t-att-rowspan="partcount" style="width:8%"><span t-field="r.name" /> </td>
                 <td t-att-rowspan="partcount" style="width:8%"><span t-field="r.job_order_date" /></td>
-                <td t-att-rowspan="partcount" style="max-width:250px;"><span t-field="r.reason" /></td>
-                <td  t-att-rowspan="partcount" style="max-width:250px;"><span t-field="r.corrective_action" /></td>
+                <td t-att-rowspan="partcount" style="max-width:250px;">
+                   <t t-if="r.reason">
+                        <span t-field="r.reason" />
+                   </t>
+                   <t t-if="not r.reason and r.job_order_type == 'preventive'">
+                       <span> Preventive Maintenance </span>
+                   </t>
+
+                </td>
+
+                <td  t-att-rowspan="partcount" style="max-width:250px;">
+                    <t t-if="r.corrective_action">
+                        <span t-field="r.corrective_action" />
+                    </t>
+                    <t t-if="not r.corrective_action and r.job_order_type == 'preventive'">
+                        <span> Preventive Maintenance Tasks </span>
+                    </t>
+                </td>
                 <td t-att-rowspan="partcount"><span t-field="r.job_category_id" /></td>
                 <td t-att-rowspan="partcount" style="width:10%"><span t-field="r.priority" /></td>
                 <t t-foreach="r.spare_part_ids" t-as="d">
